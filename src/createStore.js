@@ -7,8 +7,8 @@ const { module1, module2 } = modules
 
 Vue.use(Vuex)
 
-export function CreateStore () {
-  return new Vuex.store({
+export function CreateStore() {
+  return new Vuex.Store({
     modules: {
       a: {
         namespaced: true,

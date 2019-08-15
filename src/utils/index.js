@@ -1,3 +1,6 @@
+const fs = require('fs')
+const resolvePath = (file) => fs.resolvePath(__dirname, file)
+
 export default {
   /**
      *
@@ -10,5 +13,11 @@ export default {
     return store.registerStoreModule(module, {
       ...options
     })
+  },
+  unregisterModule (store, module) {
+    return store.unregisterModule(module)
+  },
+  handleError (err, fn) {
+    fs.appendFile(resolvePath('../../log.txt'), err, typeof fn === 'function' && fn(err))
   }
 }

@@ -8,16 +8,16 @@ import { sync } from 'vuex-router-sync'
 import utils from './utils'
 import mixin from './mixin'
 
-import './registerServiceWorker'
+// import './registerServiceWorker'
 
 Vue.mixin(mixin)
 
 // 全局注册工具包
-Vue.prototype.$util = utils
+Vue.prototype.$util = utils 
 
 Vue.config.productionTip = false
 
-export function CreateAPP (context = '') {
+export function CreateApp (context = '') {
   const store = CreateStore()
   const router = CreateRouter()
   sync(store, router)

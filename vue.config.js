@@ -6,15 +6,15 @@ const projectConfig = require('./config')
 
 module.exports = {
   publicPath: isProd ? projectConfig.build.assetsPublicPath : projectConfig.dev.assetsPublicPath,
-    lintOnSave: !isProd,
-    //在浏览器同时显示警告和错误
-    devServer: {
-        overlay: {
-            warnings: true,
-            errors: true
-        }
-    },
-    productionSourceMap: !isProd, //再生产环境加速构建
+  lintOnSave: !isProd,
+  // 在浏览器同时显示警告和错误
+  devServer: {
+    overlay: {
+      warnings: true,
+      errors: true
+    }
+  },
+  productionSourceMap: !isProd, // 再生产环境加速构建
   // 构建多页面应用时使用
   // pages: {
   //     index: {
@@ -50,19 +50,25 @@ module.exports = {
       })
     config.module.rule('eslint').uses.clear()
     config.module.rule('eslint').clear()
+    config.resolve.alias
+      .set('util', resolvePath('./src/utils/'))
     if (process.env.VUE_CLI_SSR_TARGET === 'client') {
-      config.resolve.alias.set('~api', resolvePath('.src/api/client/'))
+      // 客户端渲染构建时的配置项,
     } else {
-      config.resolve.alias.set('~api', resolvePath('.src/api/server/'))
+      // 服务端渲染构建时的配置项,
+      
     }
   },
   css: {
     loaderOptions: {}
   },
+  // 第三方插件的自定义选项
+  // https://vue-cli-plugin-ssr.netlify.com/guide/configuration.html
+  // vue-ssr 插件配置
   pluginOptions: {
     ssr: {
-      port: 8080,
-      host: null,
+      port: 8081,
+      host: '',
       entry: target => `./src/entry/entry-${target}`,
       defaultTitle: '自律给我自由',
       skipRequests: req => req.originalUrl === '',
@@ -78,19 +84,21 @@ module.exports = {
 
         app.set('views', resolvePath('./dist'))
         app.set('view engine', 'html')
+
+        //这里我们可以做一些路由请求处理
+        app.get('*', )
       },
       distPath: resolvePath('./dist'),
       error500Html: null,
       templatePath: resolvePath('./dist/index.html'),
-      serviceWorkerPath: resolvePath('./dist/service-worker.js'),
+      // serviceWorkerPath: resolvePath('./dist/service-worker.js'),
       directives: {
 
       }
     }
   },
-  devServer: {
-
-  },
+  // devServer: {
+  // },
   pwa: {
     name: 'KEEP',
     themeColor: '',

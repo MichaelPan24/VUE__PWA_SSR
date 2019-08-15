@@ -3,7 +3,7 @@ import keepJsBridge from 'keep-jsbridge'
 import keepOpenApp from 'keep-openapp'
 import keepWechajsSdk from 'keep-wechatjssdk'
 
-import api from '~api/client-index'
+import api from '../api/client/client-index'
 import { CreateApp } from '../main'
 const { app, store, router } = CreateApp()
 
@@ -16,7 +16,20 @@ Vue.use(keepWechajsSdk)
 
 // 客户端入口混入路由生命周期事件
 Vue.mixin({
-
+  /**
+   * 可以在其中注入路由组价进入前后逻辑,在此加入相应的动效或者记录功能
+   */
+  // beforeRouteUpdate(to, from, next) {
+  //   const {asyncData} = this.$options
+  //   if (asyncData) {
+  //     asyncData({
+  //       store: this.$store,
+  //       route: to
+  //     }).then(next).catch(next)
+  //   } else {
+  //     next()
+  //   }
+  // }
 })
 
 // 异步组件加载完成
@@ -30,8 +43,9 @@ router.beforeResolve((to, from, next) => {
     return next()
   }
 
-  Promise.all(
-    activated.map((c, i) => {
+  //使用 allSettled 来统一处理 resolve 以及 reject 态
+  Promise.allSettled(
+    activated.map(c => {
       /**
              * 需要从服务端预取数据的条件
              * 1.非 keep alive 组件
@@ -47,12 +61,19 @@ router.beforeResolve((to, from, next) => {
           })
       }
     })
-  )
+  ).then(results => {
+    results.forEach(result => {
+      if (result.status === 'reject') {
+        this.$util.handleError(result, (result) => {
+        })
+      }
+    });
+  })
 })
 
 // 当已经取到服务端数据时将客户端的 state 进行替换
 if (window.__INITIAL_STATE__) {
   store.replaceState(window.__INITIAL_STATE__)
-  store.state.$api = api    //注入客户端请求 api 逻辑
+  store.state.$api = api // 注入客户端请求 api 逻辑
 }
 router.onReady(() => app.$mount('#app'))

@@ -8,22 +8,26 @@
 import mixin from './mixins'
 
 let isClient = true
-let modulePath = ''
+let modulePath = 'a/module1'
 let options = { preserveState: isClient }
 
 export default {
   mixins: [mixin(this, modulePath, options)],
 
-  asyncData ({ isDev, route, store, env, params, query, req, res, redirect, error }) {
+  asyncData () {
+    return {
 
+    }
   },
 
   data () {
+    return {
 
+    }
   },
   computed: {
     list () {
-      return this.$store.state.a
+      // return this.$store.state.a
     }
   }
 }
